@@ -16,12 +16,12 @@ export default function AdminOverview() {
           </p>
         </Link>
         
-        <div className="bg-card border border-white/5 rounded-2xl p-6 opacity-50">
-          <h3 className="text-lg font-medium">Winner Verification</h3>
+        <Link href="/admin/winners" className="bg-card border border-white/5 rounded-2xl p-6 hover:bg-white/5 transition-colors cursor-pointer group">
+          <h3 className="text-lg font-medium group-hover:text-primary transition-colors">Winner Verification &rarr;</h3>
           <p className="text-sm text-muted-foreground mt-2">
-            Review uploaded Golf Memberships/IDs and process bank payouts. (Coming Soon)
+            Review uploaded Golf Memberships/IDs and process bank payouts.
           </p>
-        </div>
+        </Link>
         
         <div className="bg-card border border-white/5 rounded-2xl p-6 opacity-50">
           <h3 className="text-lg font-medium">Platform Analytics</h3>
