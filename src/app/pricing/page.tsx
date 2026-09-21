@@ -11,10 +11,12 @@ import { createClient } from "@/lib/supabase/client";
 export default function PricingPage() {
   const [currency, setCurrency] = useState<"GBP" | "INR" | "USD">("GBP");
   const [isGuest, setIsGuest] = useState(true);
+  const [isActive, setIsActive] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
-    async function fetchRegion() {
+    async function fetchRegionAndSub() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         setIsGuest(false);
@@ -22,9 +24,21 @@ export default function PricingPage() {
         if (profile?.region === 'India') setCurrency('INR');
         else if (profile?.region === 'USA') setCurrency('USD');
         else setCurrency('GBP');
+
+        const { data: sub } = await supabase
+          .from("subscriptions")
+          .select("status, plan_id, subscription_plans(name)")
+          .eq("user_id", session.user.id)
+          .in("status", ["active", "trialing"])
+          .maybeSingle();
+          
+        if (sub) {
+          setIsActive(true);
+          setCurrentPlan((sub.subscription_plans as any)?.name);
+        }
       }
     }
-    fetchRegion();
+    fetchRegionAndSub();
   }, [supabase]);
 
   const pricing = {
@@ -100,13 +114,20 @@ export default function PricingPage() {
               </ul>
               
               <div className="mt-8">
-                {/* In a real app, this links to an API route to generate a Stripe Checkout session */}
-                <form action="/api/stripe/checkout" method="POST">
-                  <input type="hidden" name="priceId" value="price_1UHpeQHyyxarLgzJ7DnheLQA" />
-                  <Button type="submit" className="w-full h-12 text-lg font-medium border-white/20" variant="outline">
-                    Subscribe Monthly
-                  </Button>
-                </form>
+                {isActive ? (
+                  <form action="/api/stripe/portal" method="POST">
+                    <Button type="submit" className="w-full h-12 text-lg font-medium border-white/20" variant="outline">
+                      Manage Subscription
+                    </Button>
+                  </form>
+                ) : (
+                  <form action="/api/stripe/checkout" method="POST">
+                    <input type="hidden" name="priceId" value="price_1UHpeQHyyxarLgzJ7DnheLQA" />
+                    <Button type="submit" className="w-full h-12 text-lg font-medium border-white/20" variant="outline">
+                      Subscribe Monthly
+                    </Button>
+                  </form>
+                )}
               </div>
             </div>
 
@@ -141,12 +162,20 @@ export default function PricingPage() {
               </ul>
               
               <div className="mt-8">
-                <form action="/api/stripe/checkout" method="POST">
-                  <input type="hidden" name="priceId" value="price_1UHpeRHyyxarLgzJkP35Kh1d" />
-                  <Button type="submit" className="w-full h-12 text-lg font-medium bg-primary text-primary-foreground hover:bg-primary/90">
-                    Subscribe Annually
-                  </Button>
-                </form>
+                {isActive ? (
+                  <form action="/api/stripe/portal" method="POST">
+                    <Button type="submit" className="w-full h-12 text-lg font-medium bg-primary text-primary-foreground hover:bg-primary/90">
+                      Manage Subscription
+                    </Button>
+                  </form>
+                ) : (
+                  <form action="/api/stripe/checkout" method="POST">
+                    <input type="hidden" name="priceId" value="price_1UHpeRHyyxarLgzJkP35Kh1d" />
+                    <Button type="submit" className="w-full h-12 text-lg font-medium bg-primary text-primary-foreground hover:bg-primary/90">
+                      Subscribe Annually
+                    </Button>
+                  </form>
+                )}
               </div>
             </div>
 
