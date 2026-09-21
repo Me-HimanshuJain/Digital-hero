@@ -1,101 +1,94 @@
-import Image from "next/image";
+import { Navbar } from "@/components/marketing/Navbar";
+import { Footer } from "@/components/marketing/Footer";
+import { HeroScene } from "@/components/3d/HeroScene";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowRight, Trophy, Heart, ShieldCheck } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden">
+      <Navbar />
+      
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex items-center pt-16">
+        <HeroScene />
+        
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start justify-center">
+          <div className="max-w-3xl space-y-8">
+            <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm text-primary backdrop-blur-md">
+              <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
+              Join the 2026 Edition Draw
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-balance font-heading">
+              Play your game. <br/>
+              <span className="text-primary">Make an impact.</span>
+            </h1>
+            
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl text-balance">
+              The premium performance platform where your golf scores become your ticket to monthly rewards, while automatically supporting charities you care about.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Link href="/signup">
+                <Button size="lg" className="w-full sm:w-auto text-lg h-14 px-8 bg-primary text-primary-foreground hover:bg-primary/90">
+                  Join Digital Heroes <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/#how-it-works">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg h-14 px-8 border-white/10 hover:bg-white/5 backdrop-blur-sm">
+                  Explore How it Works
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+
+      {/* Value Prop Section (How It Works) */}
+      <section id="how-it-works" className="py-24 bg-card/30 border-y border-white/5 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div id="how-it-works-item" className="flex flex-col space-y-4">
+              <div className="h-12 w-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
+                <Trophy className="h-6 w-6" />
+              </div>
+              <h3 className="text-xl font-bold">Track & Win</h3>
+              <p className="text-muted-foreground">Log your latest five Stableford scores. These scores automatically enter you into our premium monthly prize draw.</p>
+            </div>
+            <div id="charities" className="flex flex-col space-y-4">
+              <div className="h-12 w-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
+                <Heart className="h-6 w-6" />
+              </div>
+              <h3 className="text-xl font-bold">Give Back</h3>
+              <p className="text-muted-foreground">A minimum of 10% of your subscription goes directly to a charity you choose. Make every round matter.</p>
+            </div>
+            <div id="draw" className="flex flex-col space-y-4">
+              <div className="h-12 w-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
+                <ShieldCheck className="h-6 w-6" />
+              </div>
+              <h3 className="text-xl font-bold">Verified Trust</h3>
+              <p className="text-muted-foreground">Cryptographic draw engine with full transparency. Win up to a 5-number jackpot with secure payouts.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Basic content placeholder for other sections */}
+      <section className="py-32 relative z-10 bg-background">
+        <div className="container mx-auto px-4 text-center space-y-8">
+          <h2 className="text-3xl md:text-5xl font-bold font-heading">Ready to step up?</h2>
+          <p className="text-muted-foreground max-w-xl mx-auto">
+            Join the community of golfers combining their passion for the game with real-world impact.
+          </p>
+          <Link href="/pricing">
+            <Button size="lg" className="h-12 px-8">View Subscription Plans</Button>
+          </Link>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 }
