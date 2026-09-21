@@ -22,13 +22,13 @@ export class SubscriptionService {
     const priceId = stripeSubscription.items.data[0].price.id;
 
     // Find the subscription plan in Supabase
-    const { data: plan } = await supabase
+    const { data: plan, error: planError } = await supabase
       .from("subscription_plans")
       .select("id")
       .eq("stripe_price_id", priceId)
-      .single();
+      .maybeSingle();
 
-    if (!plan) {
+    if (planError || !plan) {
       console.error(`Subscription plan not found in database for price ${priceId}`);
       // Usually, you might sync the plan from Stripe if it doesn't exist, but for now log it.
       return;

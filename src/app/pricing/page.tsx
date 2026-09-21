@@ -122,7 +122,7 @@ export default function PricingPage() {
                   </form>
                 ) : (
                   <form action="/api/stripe/checkout" method="POST">
-                    <input type="hidden" name="priceId" value="price_1UHpeQHyyxarLgzJ7DnheLQA" />
+                    <input type="hidden" name="priceId" value={process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY || ""} />
                     <Button type="submit" className="w-full h-12 text-lg font-medium border-white/20" variant="outline">
                       Subscribe Monthly
                     </Button>
@@ -170,7 +170,7 @@ export default function PricingPage() {
                   </form>
                 ) : (
                   <form action="/api/stripe/checkout" method="POST">
-                    <input type="hidden" name="priceId" value="price_1UHpeRHyyxarLgzJkP35Kh1d" />
+                    <input type="hidden" name="priceId" value={process.env.NEXT_PUBLIC_STRIPE_PRICE_ANNUAL || ""} />
                     <Button type="submit" className="w-full h-12 text-lg font-medium bg-primary text-primary-foreground hover:bg-primary/90">
                       Subscribe Annually
                     </Button>
