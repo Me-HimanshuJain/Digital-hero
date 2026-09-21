@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { SessionFixer } from "@/components/SessionFixer";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -20,7 +19,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", inter.variable, "dark")}>
       <body className="antialiased min-h-screen bg-background">
-        <SessionFixer />
         {children}
       </body>
     </html>
