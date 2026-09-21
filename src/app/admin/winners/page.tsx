@@ -26,7 +26,7 @@ export default function AdminWinnersPage() {
           profiles ( id, full_name )
         )
       `)
-      .order("created_at", { ascending: false });
+      .order("submitted_at", { ascending: false });
 
     if (data) setProofs(data);
     setLoading(false);
