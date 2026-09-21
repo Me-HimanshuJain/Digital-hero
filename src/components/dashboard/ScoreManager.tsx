@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, Trash2 } from "lucide-react";
 import { ScoreData } from "@/server/services/ScoreService";
+import { getLatestScoresAction, addScoreAction, deleteScoreAction } from "@/server/actions/scores";
 
 export function ScoreManager({ isActive = true }: { isActive?: boolean }) {
   const router = useRouter();
@@ -16,52 +17,45 @@ export function ScoreManager({ isActive = true }: { isActive?: boolean }) {
   
   // Form state
   const [scoreValue, setScoreValue] = useState("");
+  
+  // Default date to today
   const [scoreDate, setScoreDate] = useState(() => {
-    return new Date().toISOString().split('T')[0];
+    const today = new Date();
+    return today.toISOString().split("T")[0];
   });
 
-  const fetchScores = async () => {
-    try {
-      const res = await fetch("/api/scores");
-      if (!res.ok) throw new Error("Failed to fetch scores");
-      const data = await res.json();
-      setScores(data);
-    } catch (err: any) {
-      console.error(err);
-      setError("Could not load scores.");
-    } finally {
+  useEffect(() => {
+    async function fetchScores() {
+      try {
+        const data = await getLatestScoresAction();
+        setScores(data);
+      } catch (err: any) {
+        setError("Could not load scores.");
+        console.error("Failed to load scores:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    if (isActive) {
+      fetchScores();
+    } else {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchScores();
-  }, []);
+  }, [isActive]);
 
   const handleAddScore = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
     setError("");
-
-    const parsedScore = parseInt(scoreValue, 10);
-    if (isNaN(parsedScore) || parsedScore < 1 || parsedScore > 45) {
-      setError("Score must be between 1 and 45.");
-      setSubmitting(false);
-      return;
-    }
+    setSubmitting(true);
 
     try {
-      const res = await fetch("/api/scores", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ score: parsedScore, score_date: scoreDate }),
-      });
-
-      const data = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to add score");
+      const parsedScore = parseInt(scoreValue, 10);
+      if (isNaN(parsedScore) || parsedScore < 1 || parsedScore > 45) {
+        throw new Error("Please enter a valid Stableford score (1-45)");
       }
+
+      const data = await addScoreAction(parsedScore, scoreDate);
 
       setScores(data); // Returns the updated list of up to 5 scores
       setScoreValue(""); // Reset input
@@ -74,13 +68,10 @@ export function ScoreManager({ isActive = true }: { isActive?: boolean }) {
   };
 
   const handleDeleteScore = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this score?")) return;
+    
     try {
-      const res = await fetch(`/api/scores/${id}`, {
-        method: "DELETE",
-      });
-      
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to delete");
+      const data = await deleteScoreAction(id);
       
       setScores(data);
       router.refresh(); // Refresh the page server components
