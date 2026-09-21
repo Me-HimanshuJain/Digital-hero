@@ -42,8 +42,12 @@ export class SubscriptionService {
         stripe_customer_id: customerId,
         stripe_subscription_id: subscriptionId,
         status: stripeSubscription.status,
-        start_at: new Date(stripeSubscription.current_period_start * 1000).toISOString(),
-        renewal_at: new Date(stripeSubscription.current_period_end * 1000).toISOString(),
+        start_at: new Date(
+          ((stripeSubscription as any).current_period_start || stripeSubscription.items.data[0].current_period_start) * 1000
+        ).toISOString(),
+        renewal_at: new Date(
+          ((stripeSubscription as any).current_period_end || stripeSubscription.items.data[0].current_period_end) * 1000
+        ).toISOString(),
         canceled_at: stripeSubscription.cancel_at ? new Date(stripeSubscription.cancel_at * 1000).toISOString() : null,
       }, { onConflict: 'stripe_subscription_id' });
 
@@ -63,7 +67,9 @@ export class SubscriptionService {
       .from("subscriptions")
       .update({
         status: subscription.status,
-        renewal_at: new Date(subscription.current_period_end * 1000).toISOString(),
+        renewal_at: new Date(
+          ((subscription as any).current_period_end || subscription.items.data[0].current_period_end) * 1000
+        ).toISOString(),
         canceled_at: subscription.cancel_at ? new Date(subscription.cancel_at * 1000).toISOString() : null,
       })
       .eq("stripe_subscription_id", subscriptionId);

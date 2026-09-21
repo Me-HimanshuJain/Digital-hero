@@ -9,32 +9,39 @@ const supabase = createClient(
 );
 
 async function seedPlans() {
+  const monthlyPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY;
+  const annualPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ANNUAL;
+
+  if (!monthlyPriceId || !annualPriceId) {
+    console.error("Missing Stripe Price IDs in .env.local");
+    return;
+  }
+
   const plans = [
     {
       name: "Monthly Hero",
-      billing_interval: "month",
       price: 4.99,
-      currency: "GBP",
-      stripe_price_id: "price_1UHpeQHyyxarLgzJ7DnheLQA" // From your .env
+      billing_interval: "month",
+      stripe_price_id: monthlyPriceId,
     },
     {
       name: "Annual Hero",
-      billing_interval: "year",
       price: 49.99,
-      currency: "GBP",
-      stripe_price_id: "price_1UHpeRHyyxarLgzJkP35Kh1d" // From your .env
+      billing_interval: "year",
+      stripe_price_id: annualPriceId,
     }
   ];
 
   for (const plan of plans) {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("subscription_plans")
-      .upsert(plan, { onConflict: "stripe_price_id" });
-      
+      .upsert(plan, { onConflict: "stripe_price_id" })
+      .select();
+
     if (error) {
-      console.error("Error inserting plan:", error);
+      console.error(`Error inserting plan ${plan.name}:`, error);
     } else {
-      console.log(`Successfully seeded plan: ${plan.name}`);
+      console.log(`Inserted plan: ${plan.name}`);
     }
   }
 }
