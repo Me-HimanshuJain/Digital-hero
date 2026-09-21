@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, Trash2 } from "lucide-react";
 import { ScoreData } from "@/server/services/ScoreService";
 
 export function ScoreManager({ isActive = true }: { isActive?: boolean }) {
+  const router = useRouter();
   const [scores, setScores] = useState<ScoreData[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -63,6 +65,7 @@ export function ScoreManager({ isActive = true }: { isActive?: boolean }) {
 
       setScores(data); // Returns the updated list of up to 5 scores
       setScoreValue(""); // Reset input
+      router.refresh(); // Refresh the page server components to update the qualified status
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -80,6 +83,7 @@ export function ScoreManager({ isActive = true }: { isActive?: boolean }) {
       if (!res.ok) throw new Error(data.error || "Failed to delete");
       
       setScores(data);
+      router.refresh(); // Refresh the page server components
     } catch (err: any) {
       setError(err.message);
     }
