@@ -23,7 +23,7 @@ export default function AdminWinnersPage() {
         *,
         winners (
           *,
-          profiles ( full_name, email )
+          profiles ( id, full_name )
         )
       `)
       .order("created_at", { ascending: false });
@@ -121,7 +121,9 @@ export default function AdminWinnersPage() {
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <h3 className="font-bold text-lg">{proof.winners.profiles.full_name}</h3>
-                  <span className="text-sm px-2 py-0.5 rounded-full bg-white/10">{proof.winners.profiles.email}</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-muted-foreground font-mono">
+                    ID: {proof.winners.profiles.id.slice(0, 8)}...
+                  </span>
                 </div>
                 <p className="text-primary font-bold text-xl mb-1">
                   Won £{proof.winners.prize_amount} <span className="text-sm text-muted-foreground font-normal">(Tier {proof.winners.match_tier})</span>
