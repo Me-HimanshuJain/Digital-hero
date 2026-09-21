@@ -20,7 +20,7 @@ export class WinnerVerificationService {
       .single();
 
     if (winnerError || !winner) throw new Error("Winner record not found");
-    if (winner.status !== 'pending_proof' && winner.status !== 'rejected') {
+    if (winner.verification_status !== 'pending_proof' && winner.verification_status !== 'rejected') {
       throw new Error("Cannot submit proof for this winner status");
     }
 
@@ -29,8 +29,8 @@ export class WinnerVerificationService {
       .from("winner_proofs")
       .insert({
         winner_id: winnerId,
-        document_url: storagePath,
-        status: "under_review"
+        file_url: storagePath,
+        file_type: "document"
       })
       .select()
       .single();
@@ -40,7 +40,7 @@ export class WinnerVerificationService {
     // 3. Update winner status
     const { error: updateError } = await supabase
       .from("winners")
-      .update({ status: "proof_submitted" })
+      .update({ verification_status: "under_review" })
       .eq("id", winnerId);
 
     if (updateError) throw updateError;
@@ -72,13 +72,13 @@ export class WinnerVerificationService {
     // Update proof status
     await supabase
       .from("winner_proofs")
-      .update({ status: "verified", admin_notes: adminNotes, verified_at: new Date().toISOString() })
+      .update({ reviewed_at: new Date().toISOString(), reviewed_by: user.id })
       .eq("id", proofId);
 
-    // Update winner status to payout_pending
+    // Update winner status to verified
     await supabase
       .from("winners")
-      .update({ status: "verified" })
+      .update({ verification_status: "verified" })
       .eq("id", proof.winner_id);
 
     return { success: true };
@@ -107,13 +107,13 @@ export class WinnerVerificationService {
     // Update proof status
     await supabase
       .from("winner_proofs")
-      .update({ status: "rejected", admin_notes: rejectionReason, verified_at: new Date().toISOString() })
+      .update({ rejection_reason: rejectionReason, reviewed_at: new Date().toISOString(), reviewed_by: user.id })
       .eq("id", proofId);
 
     // Update winner status back to rejected (so they can upload again)
     await supabase
       .from("winners")
-      .update({ status: "rejected" })
+      .update({ verification_status: "rejected" })
       .eq("id", proof.winner_id);
 
     return { success: true };
@@ -138,7 +138,7 @@ export class WinnerVerificationService {
       .single();
 
     if (fetchError || !winner) throw new Error("Winner not found");
-    if (winner.status !== 'verified') throw new Error("Winner is not verified yet");
+    if (winner.verification_status !== 'verified') throw new Error("Winner is not verified yet");
 
     // Create payout record
     const { error: payoutError } = await supabase
@@ -156,7 +156,7 @@ export class WinnerVerificationService {
     // Update winner status
     const { error: updateError } = await supabase
       .from("winners")
-      .update({ status: "paid" })
+      .update({ payout_status: "paid" })
       .eq("id", winnerId);
 
     if (updateError) throw updateError;

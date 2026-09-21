@@ -16,7 +16,7 @@ export default function AdminCharitiesPage() {
   const fetchStats = async () => {
     // Fetch all charities
     const { data: charities } = await supabase
-      .from("charity_directory")
+      .from("charities")
       .select("*")
       .order("name");
 

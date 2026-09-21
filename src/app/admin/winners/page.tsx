@@ -128,16 +128,16 @@ export default function AdminWinnersPage() {
                 </p>
                 
                 <div className="mt-4 flex gap-3">
-                  <Button variant="outline" size="sm" onClick={() => getSignedUrl(proof.document_url)}>
+                  <Button variant="outline" size="sm" onClick={() => getSignedUrl(proof.file_url)}>
                     <ExternalLink className="w-4 h-4 mr-2" /> View Uploaded Proof
                   </Button>
                 </div>
               </div>
 
               <div className="flex flex-col gap-2 min-w-[200px] border-l border-white/5 pl-6">
-                <p className="text-sm text-muted-foreground mb-1">Status: <span className="font-bold text-white capitalize">{proof.status.replace("_", " ")}</span></p>
+                <p className="text-sm text-muted-foreground mb-1">Status: <span className="font-bold text-white capitalize">{proof.winners.verification_status.replace("_", " ")}</span></p>
                 
-                {proof.status === 'under_review' && (
+                {proof.winners.verification_status === 'under_review' && (
                   <>
                     <Button 
                       onClick={() => handleVerify(proof.id, 'approve')} 
@@ -158,7 +158,7 @@ export default function AdminWinnersPage() {
                   </>
                 )}
 
-                {proof.status === 'verified' && proof.winners.status !== 'paid' && (
+                {proof.winners.verification_status === 'verified' && proof.winners.payout_status !== 'paid' && (
                   <div className="mt-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                     <p className="text-xs text-blue-400 mb-2">Proof approved. Waiting for bank transfer.</p>
                     <Button 
@@ -172,7 +172,7 @@ export default function AdminWinnersPage() {
                   </div>
                 )}
 
-                {proof.winners.status === 'paid' && (
+                {proof.winners.payout_status === 'paid' && (
                   <div className="flex items-center gap-2 text-green-500 font-bold mt-2">
                     <Check className="w-5 h-5" /> Payout Complete
                   </div>
