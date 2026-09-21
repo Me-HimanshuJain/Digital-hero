@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Trophy } from "lucide-react";
+import { Trophy, Eye, EyeOff } from "lucide-react";
 
 export default function SignupPage() {
   return (
@@ -20,6 +20,7 @@ export default function SignupPage() {
 function SignupContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState("");
   const [region, setRegion] = useState("UK");
   const [loading, setLoading] = useState(false);
@@ -150,15 +151,24 @@ function SignupContent() {
             
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input 
-                id="password" 
-                type="password" 
-                placeholder="••••••••" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="bg-background/50 border-white/10 h-12"
-              />
+              <div className="relative">
+                <Input 
+                  id="password" 
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="••••••••" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-background/50 border-white/10 h-12 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
               <p className="text-xs text-muted-foreground mt-1">Must include uppercase, lowercase, numbers, and special characters.</p>
             </div>
 
